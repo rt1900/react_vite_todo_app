@@ -10,4 +10,4 @@ WORKDIR /app
 COPY . .
 RUN ./mvnw clean package
 EXPOSE 8080
-CMD ["sh", "-c", "sleep 30 && ./mvnw spring-boot:run"]
+CMD ["sh", "-c", "sleep 30 && ./mvnw spring-boot:run -Dspring-boot.run.profiles=docker"]
