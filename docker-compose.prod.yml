@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    build:
-      context: ./appToDoBackend
-      dockerfile: Dockerfile
+    image: rt1900/todo-app-backend:v1.0
     ports:
       - "8080:8080"
     environment:
@@ -13,18 +11,14 @@ services:
       - database
 
   frontend:
-    build:
-      context: ./appToDoFrontend
-      dockerfile: Dockerfile
+    image: rt1900/todo-app-frontend:v1.0
     ports:
       - "5173:5173"
     depends_on:
       - backend
 
   database:
-    build:
-      context: ./database
-      dockerfile: Dockerfile
+    image: rt1900/todo-app-database:v1.0
     environment:
       POSTGRES_DB: tododb
       POSTGRES_USER: todo_user
