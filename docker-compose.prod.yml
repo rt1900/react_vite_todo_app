@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    image: rt1900/todo-app-backend:v1.0
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - database
+
+  frontend:
+    image: rt1900/todo-app-frontend:v1.0
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  database:
+    image: rt1900/todo-app-database:v1.0
+    environment:
+      POSTGRES_DB: tododb
+      POSTGRES_USER: todo_user
+      POSTGRES_PASSWORD: user_3000
+    ports:
+      - "5432:5432"
