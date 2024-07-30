@@ -28,7 +28,7 @@ function App() {
 
   // Изменен handleAddNote для отправки запроса на сервер
   const handleAddNote = () => {
-    const newNote = { text: 'New Note', isCompleted: false };    // Убираем создание ID на фронтенде
+    const newNote = { title: 'New Title', text: 'New Note', isCompleted: false };    // Убираем создание ID на фронтенде
     axios.post('http://localhost:8080/api/notes', newNote)    // Отправляем новую заметку на сервер
       .then(response => {
         setNotes([...notes, response.data]);     // Сервер возвращает заметку с сгенерированным ID
@@ -84,15 +84,17 @@ function App() {
 
   return (
     <div>
-      <Header/>
+      <Header
+          handleAddNote={handleAddNote}
+      />
+
       <AddNoteComponent 
       notes={notes} //+
-      handleAddNote={handleAddNote} //+
       handleDeleteNote={handleDeleteNote}//+
       handleNoteClick={handleNoteClick} //+
       handleToggleComplete={handleToggleComplete}
-      
       />
+
       {selectedNote && (
         <NoteModal 
           note={selectedNote} 

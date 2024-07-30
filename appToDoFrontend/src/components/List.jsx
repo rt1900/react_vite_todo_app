@@ -9,14 +9,20 @@ export default function List ({ note, onClick, handleDeleteNote, handleNoteClick
     };
 
     return (
-        <div className='box' onClick={() => handleNoteClick(note)}> 
+        <div className='box' onClick={() => handleNoteClick(note)}>
 
-            <div className='Note' >{note.text}</div>
+            <div className='note-content'>
+                <div className='note-title'>{note.title}</div>
+                <div className='note-text'>{note.text}</div>
+            </div>
+
 
             <div className='boxRightSide'>
 
                 <div>
-                    <button className='xButton' onClick={(e) => { e.stopPropagation(); handleDeleteNote(note.id);}} > 
+                    <button className='xButton' onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteNote(note.id);}} >
                          <img src={x} className='xImage' alt="Delete" />
                     </button>
                 </div>

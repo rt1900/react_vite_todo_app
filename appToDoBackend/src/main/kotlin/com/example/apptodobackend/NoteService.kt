@@ -24,6 +24,7 @@ class NoteService(private val noteRepository: NoteRepository) {
     }*/
 
     fun saveNote(note: Note): Note {
+        note.createdAt = LocalDateTime.now()
         note.lastUpdated = LocalDateTime.now() // устанавливаем время создания
         return noteRepository.save(note)
     }
@@ -42,6 +43,7 @@ class NoteService(private val noteRepository: NoteRepository) {
         return if (noteRepository.existsById(id)) {
             val existingNote = noteRepository.findById(id).orElse(null)
             if (existingNote != null) {
+                existingNote.title = updatedNote.title
                 existingNote.text = updatedNote.text
                 existingNote.isCompleted = updatedNote.isCompleted
                 existingNote.lastUpdated = LocalDateTime.now() // обновляем поле

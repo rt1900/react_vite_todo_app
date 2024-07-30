@@ -14,12 +14,14 @@
   display: flex;
   justify-content: center; /* Center the text horizontally */
   align-items: center; /* Center the text vertically */
-  height: 60px; /* Adjust the height as needed */
+  height: 220px; /* Adjust the height as needed */
+  background-color: white;
+  flex-direction: column;
 }
 
 .colorMetro {
   color: blue;
-  margin-top: 110px;
+  margin-top: 0px;
   margin-bottom: 0px;
 }
 
@@ -28,32 +30,62 @@
 }
 
 .logo {
-width: 60px;
-height: 60px;
-margin-top:115px;
-margin-right: 10px;
+  width: 60px;
+  height: 60px;
+  margin-top:0px;
+  margin-right: 10px;
+
 }
 
 .header-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center; /* Центрировать по горизонтали */
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.ToDoAppAndAddNote {
+  margin-top: 0px;
+}
+
+
+.noteArea1 {
+  padding-top: 32%;
+}
+
+.noteArea2 {
+  overflow-y: auto;
+  padding-top: 10vh;
 }
 
 .box{
   border: 2px solid aqua;
-  /*border-color: aqua;*/
   border-radius: 9px;
   width: 350px;
-  height: 40px;
+  height: 57px;
   display: flex;
   justify-content: space-between;
   margin: 15px 15px;
   cursor: pointer;
   transition: background-color 0.3s, border-color 0.3s;
-  overflow: scroll;
+}
 
+
+.note-content {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.note-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.note-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .box:hover {
@@ -89,6 +121,9 @@ margin: 8px 10px 8px 15px;
 
 .Note{
 margin: 8px 0px 8px 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .checkbox{
@@ -130,5 +165,4 @@ textarea {
   height: 100px;
   margin-bottom: 10px;
 }
-
 

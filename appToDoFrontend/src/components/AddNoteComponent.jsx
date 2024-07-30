@@ -1,13 +1,9 @@
 import List from './List';
 
-export default function AddNoteComponent({ notes, handleAddNote, handleDeleteNote, handleNoteClick, handleToggleComplete }) {
+export default function AddNoteComponent({ notes, handleDeleteNote, handleNoteClick, handleToggleComplete }) {
     return (
-        <div className="content">
-            
-                <h2>ToDo App</h2>
-                <button className="addNoteButton" onClick={handleAddNote}>Add Note</button>
-           
-            <div> 
+        <div className="noteArea1">
+            <div className="noteArea2">
                 {notes.map(note => (
                     <List 
                         key={note.id} 

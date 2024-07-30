@@ -10,9 +10,10 @@ import java.time.LocalDateTime //r
 data class Note(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
+    var title: String, // новое поле
     var text: String,
     var isCompleted: Boolean = false,
+    var createdAt: LocalDateTime = LocalDateTime.now(),
     var lastUpdated: LocalDateTime = LocalDateTime.now() //r
-
 
 )
