@@ -11,7 +11,7 @@ export default function NoteModal({ note, onSave, onClose }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <h2>Edit Note</h2>
+        <h2 className="justDoIt">Just write it!</h2>
         <input
             type="text"
             value={title}
@@ -24,8 +24,8 @@ export default function NoteModal({ note, onSave, onClose }) {
             placeholder="Note"
         ></textarea>
 
-        <button onClick={handleSave}>Save</button>
-        <button onClick={onClose}>Close</button>
+        <button onClick={handleSave} className="save">Save</button>
+        <button onClick={onClose} className="close">Close</button>
       </div>
     </div>
   );

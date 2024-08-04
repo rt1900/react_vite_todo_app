@@ -3,7 +3,9 @@ import axios from 'axios';
 import './App.css';
 import Header from './components/Header';  
 import AddNoteComponent from './components/AddNoteComponent';
-import NoteModal from './components/NoteModal'; 
+import NoteModal from './components/NoteModal';
+
+
 
 
 function App() {
@@ -83,27 +85,27 @@ function App() {
     };
 
   return (
-    <div>
-      <Header
-          handleAddNote={handleAddNote}
-      />
-
-      <AddNoteComponent 
-      notes={notes} //+
-      handleDeleteNote={handleDeleteNote}//+
-      handleNoteClick={handleNoteClick} //+
-      handleToggleComplete={handleToggleComplete}
-      />
-
-      {selectedNote && (
-        <NoteModal 
-          note={selectedNote} 
-          onSave={handleSaveNote} 
-          onClose={() => setSelectedNote(null)} 
-          
+      <div>
+        <Header
+            handleAddNote={handleAddNote}
         />
-      )} 
-    </div>
+
+        <AddNoteComponent
+            notes={notes} //+
+            handleDeleteNote={handleDeleteNote}//+
+            handleNoteClick={handleNoteClick} //+
+            handleToggleComplete={handleToggleComplete}
+        />
+
+        {selectedNote && (
+            <NoteModal
+                note={selectedNote}
+                onSave={handleSaveNote}
+                onClose={() => setSelectedNote(null)}
+            />
+        )}
+        {/*<img src="/finger.png" alt="Pointing Finger" className="pointing-image"/>*/}
+      </div>
   );
 }
 

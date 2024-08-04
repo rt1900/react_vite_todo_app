@@ -7,9 +7,7 @@ import java.time.LocalDateTime
 @Service
 class NoteService(private val noteRepository: NoteRepository) {
 
-    /*fun getAllNotes(): List<Note> {
-        return noteRepository.findAll()
-    }*/
+
 
     fun getAllNotes(): List<Note> {
         return noteRepository.findAll().sortedByDescending { it.lastUpdated } // сортируем по последнему обновлению
@@ -19,24 +17,13 @@ class NoteService(private val noteRepository: NoteRepository) {
         return noteRepository.findById(id).orElse(null)
     }
 
-   /* fun saveNote(note: Note): Note {
-        return noteRepository.save(note)
-    }*/
 
     fun saveNote(note: Note): Note {
         note.createdAt = LocalDateTime.now()
-        note.lastUpdated = LocalDateTime.now() // устанавливаем время создания
+        note.lastUpdated = LocalDateTime.now()
         return noteRepository.save(note)
     }
 
-    //это черновик:
-    /*fun updateNote(id: Long, updatedNote: Note): Note? {
-        return if (noteRepository.existsById(id)) {
-            noteRepository.save(updatedNote.copy(id = id))
-        } else {
-            null
-        }
-    }*/
 
 
     fun updateNote(id: Long, updatedNote: Note): Note? {
