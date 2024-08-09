@@ -1,12 +1,9 @@
 #root {
-  
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
-
-
 
 .header {
   position: fixed; /* Fix the header at the top of the viewport */
@@ -36,7 +33,6 @@
   height: 60px;
   margin-top:0px;
   margin-right: 10px;
-
 }
 
 .header-content {
@@ -49,6 +45,45 @@
 
 .ToDoAppAndAddNote {
   margin-top: 0px;
+}
+
+.signin-login-buttons{
+
+  padding-top: 2%;
+  padding-left: 87%;
+  margin-right: 1%;
+  /*width: 230vh;*/
+
+}
+
+.signinlogin{
+  height: 4vh;
+  font-size: 1.5vh;
+  font-weight: 600;
+  color: blue;
+}
+
+.signinlogin:hover {
+  background-color:aqua;
+}
+
+.SignInModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signin-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 30%;
 }
 
 .noteArea1 {
@@ -77,7 +112,6 @@
   margin-left:4vh;
   overflow: hidden;
   align-content: center;
-
 }
 
 .note-title {
@@ -87,7 +121,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
-
 }
 
 .note-text {
@@ -112,7 +145,7 @@
  display: flex;
  align-content: center;
  align-items: center;
- border: nones;
+ border: none;
  background-color: transparent;
  margin-bottom: 50px;
  cursor: pointer;
@@ -183,8 +216,7 @@ textarea {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 300px;
-  max-width: 100%;
+  width: 30%;
 }
 
 .justDoIt {

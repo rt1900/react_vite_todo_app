@@ -11,11 +11,12 @@ import NoteModal from './components/NoteModal';
 function App() {
 
   const [notes, setNotes] = useState([]);   //+
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [selectedNote, setSelectedNote] = useState(null); 
 
 
-  useEffect(() => {                                               //1
+    useEffect(() => {                                               //1
     // Получаем все заметки при загрузке компонента
     axios.get('http://localhost:8080/api/notes')
       .then(response => {
@@ -84,10 +85,48 @@ function App() {
         });
     };
 
+    const handleRegister = ({ email, password, captcha }) => {
+        axios.post('http://localhost:8080/api/register', { email, password, captcha })
+            .then(response => {
+                console.log('Registration successful:', response.data);
+                setIsAuthenticated(true);
+            })
+            .catch(error => {
+                console.error('Error registering:', error);
+            });
+    };
+
+
+
+    const handleLogin = ({ email, password }) => {
+        axios.post('http://localhost:8080/api/login', { email, password })
+            .then(response => {
+                console.log('Login successful:', response.data);
+                setIsAuthenticated(true);
+            })
+            .catch(error => {
+                console.error('Error logging in:', error);
+            });
+    };
+
+    const handleSignin = () => {
+        // Логика для обработки регистрации
+    };
+
+    const handleLogout = () => {
+        setIsAuthenticated(false);
+    };
+
+
   return (
       <div>
         <Header
             handleAddNote={handleAddNote}
+            onSignin={handleSignin}
+            onLogin={handleLogin}
+            onLogout={handleLogout}
+            isAuthenticated={isAuthenticated}
+            handleRegister={handleRegister}
         />
 
         <AddNoteComponent
