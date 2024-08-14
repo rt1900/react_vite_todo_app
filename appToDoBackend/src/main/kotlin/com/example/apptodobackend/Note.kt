@@ -20,5 +20,5 @@ data class Note(
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    val user: User? = null
+    var user: User? = null
 )

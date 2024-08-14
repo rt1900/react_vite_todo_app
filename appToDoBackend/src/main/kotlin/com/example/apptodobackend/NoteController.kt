@@ -3,6 +3,10 @@ package com.example.apptodobackend
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.access.prepost.PreAuthorize
+
 
 @CrossOrigin(origins = ["http://localhost:5178"])
 @RestController
@@ -13,17 +17,27 @@ class NoteController {
     lateinit var noteService: NoteService
 
     @GetMapping
-    fun getAllNotes(): List<Note> {
-        return noteService.getAllNotes()
+    fun getAllNotes(authentication: Authentication): List<Note> {
+        val currentUser = authentication.principal as UserDetails
+        return noteService.getAllNotesForCurrentUser(currentUser.username)
     }
+
 
     @GetMapping("/{id}")
     fun getNoteById(@PathVariable id: Long): ResponseEntity<Note> {
         return noteService.getNoteById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
-    fun createNote(@RequestBody note: Note): Note {
+    fun createNote(@RequestBody note: Note, authentication: Authentication): Note {
+        println("Received request to create note from user: ${authentication.principal}")
+
+        val currentUser = authentication.principal as UserDetails // Получаем данные о текущем пользователе
+        println("User authenticated: ${currentUser.username}, Authorities: ${currentUser.authorities}")
+        val appUser = noteService.findUserByUsername(currentUser.username) // Находим пользователя в базе данных
+
+        note.user = appUser
         return noteService.saveNote(note)
     }
 
@@ -41,6 +55,11 @@ class NoteController {
     @PutMapping("/{id}/toggle-completion")
     fun toggleNoteCompletion(@PathVariable id: Long): ResponseEntity<Note> {
         return noteService.toggleNoteCompletion(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+    }
+
+    @GetMapping("/test")
+    fun testEndpoint(): ResponseEntity<String> {
+        return ResponseEntity.ok("Test successful")
     }
 
 }

@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 
+
+
 @Service
-class NoteService(private val noteRepository: NoteRepository) {
+class NoteService(private val noteRepository: NoteRepository, private val userRepository: UserRepository) {
 
 
 
@@ -63,5 +65,24 @@ class NoteService(private val noteRepository: NoteRepository) {
             null
         }
     }
+
+    fun findUserByUsername(username: String): User? {
+        return userRepository.findByEmail(username)
+    }
+
+    fun getNotesByUser(user: User): List<Note> {
+        return noteRepository.findByUser(user)
+    }
+
+    fun getAllNotesForCurrentUser(username: String): List<Note> {
+        val user = userRepository.findByEmail(username)
+        return if (user != null) {
+            getNotesByUser(user)
+        } else {
+            emptyList()
+        }
+    }
+
+
 
 }
