@@ -32,15 +32,21 @@ class SecurityConfig(val userDetailsService: UserDetailsService) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        val jwtTokenProvider = JwtTokenProvider() // Создаем или получаем экземпляр JwtTokenProvider
         http
             .csrf { csrf -> csrf.disable() }
+//            .authorizeHttpRequests { authz ->
+//                authz
+//                    .requestMatchers("/**").permitAll()  // Разрешает доступ ко всем маршрутам без аутентификации
+//            }
+
             .authorizeHttpRequests { authz ->
                 authz
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")
                     .requestMatchers("/api/user/**", "/api/notes/**").hasRole("USER")
                     .requestMatchers("/", "/api/register", "/api/login").permitAll()
             }
-            .addFilterBefore(CustomAuthenticationFilter(authenticationManager(http)), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(CustomAuthenticationFilter(authenticationManager(http), jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
 //            .formLogin { form ->
 //                form
 //                    .loginProcessingUrl("/api/login")

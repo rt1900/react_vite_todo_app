@@ -9,7 +9,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.http.HttpServletResponse
 
 class CustomAuthenticationFilter(
-    authenticationManager: AuthenticationManager
+    authenticationManager: AuthenticationManager,
+    private val jwtTokenProvider: JwtTokenProvider
 ) : UsernamePasswordAuthenticationFilter(authenticationManager) {
 
     @Throws(AuthenticationException::class)
@@ -32,9 +33,16 @@ class CustomAuthenticationFilter(
     ) {
         SecurityContextHolder.getContext().authentication = authResult
         println("User ${authResult.name} successfully authenticated with authorities: ${authResult.authorities}")
+
+        // Генерация JWT токена
+        val token = jwtTokenProvider.generateToken(authResult)
+
+        // Добавление токена в заголовок ответа
+        response.addHeader("Authorization", "Bearer $token")
+
         response.contentType = "application/json"
         response.characterEncoding = "UTF-8"
-        response.writer.write("{\"message\": \"Login successful\"}")
+        response.writer.write("{\"token\": \"$token\"}")
     }
 
     override fun unsuccessfulAuthentication(

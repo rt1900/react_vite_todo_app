@@ -31,6 +31,7 @@ class NoteController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     fun createNote(@RequestBody note: Note, authentication: Authentication): Note {
+        println("Request to create note received")
         println("Received request to create note from user: ${authentication.principal}")
 
         val currentUser = authentication.principal as UserDetails // Получаем данные о текущем пользователе
@@ -59,7 +60,9 @@ class NoteController {
 
     @GetMapping("/test")
     fun testEndpoint(): ResponseEntity<String> {
+        println("Test endpoint hit")
         return ResponseEntity.ok("Test successful")
     }
+
 
 }
