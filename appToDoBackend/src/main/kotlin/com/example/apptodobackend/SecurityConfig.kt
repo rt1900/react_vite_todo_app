@@ -32,7 +32,7 @@ class SecurityConfig(val userDetailsService: UserDetailsService) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        val jwtTokenProvider = JwtTokenProvider() // Создаем или получаем экземпляр JwtTokenProvider
+        val jwtTokenProvider = JwtTokenProvider() // Создааю или получаю экземпляр JwtTokenProvider
         http
             .csrf { csrf -> csrf.disable() }
 //            .authorizeHttpRequests { authz ->

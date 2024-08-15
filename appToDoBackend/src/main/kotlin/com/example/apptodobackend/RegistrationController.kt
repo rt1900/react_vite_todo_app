@@ -20,9 +20,9 @@ class RegistrationController(
 
         val newUser = User(
             username = user.username,
-            password = passwordEncoder.encode(user.password), // Захешируем пароль
+            password = passwordEncoder.encode(user.password), // Захеширую пароль
             email = user.email,
-            role = "ROLE_USER" // Устанавливаем роль по умолчанию
+            role = "ROLE_USER" // Устанавливаю роль по умолчанию
         )
 
         userRepository.save(newUser)

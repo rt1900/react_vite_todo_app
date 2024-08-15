@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails
 @Component
 class JwtTokenProvider {
 
-    private val jwtSecret: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512) // Замените это на ваш секретный ключ
+    private val jwtSecret: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512)
     private val jwtExpirationInMs = 3600000 // 1 час
 
     fun generateToken(authentication: Authentication): String {

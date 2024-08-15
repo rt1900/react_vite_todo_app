@@ -12,7 +12,7 @@ class NoteService(private val noteRepository: NoteRepository, private val userRe
 
 
     fun getAllNotes(): List<Note> {
-        return noteRepository.findAll().sortedByDescending { it.lastUpdated } // сортируем по последнему обновлению
+        return noteRepository.findAll().sortedByDescending { it.lastUpdated } // сортирую по последнему обновлению
     }
 
     fun getNoteById(id: Long): Note? {
@@ -35,7 +35,7 @@ class NoteService(private val noteRepository: NoteRepository, private val userRe
                 existingNote.title = updatedNote.title
                 existingNote.text = updatedNote.text
                 existingNote.isCompleted = updatedNote.isCompleted
-                existingNote.lastUpdated = LocalDateTime.now() // обновляем поле
+                existingNote.lastUpdated = LocalDateTime.now()
                 noteRepository.save(existingNote)
             } else {
                 null

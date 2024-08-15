@@ -4,7 +4,7 @@ export default function List ({ note, onClick, handleDeleteNote, handleNoteClick
 
     // Новый обработчик для чекбокса
     const handleCheckboxClick = (e) => {
-        e.stopPropagation(); // Останавливаем распространение события
+        e.stopPropagation(); // Останавливаю распространение события
         handleToggleComplete(note.id, e.target.checked);
     };
 

@@ -34,9 +34,9 @@ class NoteController {
         println("Request to create note received")
         println("Received request to create note from user: ${authentication.principal}")
 
-        val currentUser = authentication.principal as UserDetails // Получаем данные о текущем пользователе
+        val currentUser = authentication.principal as UserDetails // Получаю данные о текущем пользователе
         println("User authenticated: ${currentUser.username}, Authorities: ${currentUser.authorities}")
-        val appUser = noteService.findUserByUsername(currentUser.username) // Находим пользователя в базе данных
+        val appUser = noteService.findUserByUsername(currentUser.username) // Нахожу пользователя в базе данных
 
         note.user = appUser
         return noteService.saveNote(note)
