@@ -3,19 +3,30 @@ package com.example.apptodobackend
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
 import java.util.*
-import javax.crypto.SecretKey
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import io.jsonwebtoken.security.Keys
+import javax.crypto.SecretKey
 
 
 @Component
 class JwtTokenProvider {
 
-    private val jwtSecret: SecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512)
-    private val jwtExpirationInMs = 3600000 // 1 час
+    private val logger: Logger = LoggerFactory.getLogger(JwtTokenProvider::class.java)
+
+//    @Value("\${jwt.secret}")
+//    private lateinit var jwtSecret: String
+
+    private val jwtSecretKey: SecretKey = Keys.hmacShaKeyFor("SuperSecretKeyThatIsNotVeryLongAndNotVerySecureAndMaybeMeetsThe512BitRequirementMercedesIsBetterThanBMW".toByteArray())
+    private val jwtExpirationInMs = 3600000
+
+//    private fun getSigningKey(): SecretKey {
+//        return Keys.hmacShaKeyFor(jwtSecret.toByteArray(StandardCharsets.UTF_8))
+//    }
 
     fun generateToken(authentication: Authentication): String {
         val userPrincipal = authentication.principal as UserDetails
@@ -23,20 +34,22 @@ class JwtTokenProvider {
         val now = Date()
         val expiryDate = Date(now.time + jwtExpirationInMs)
 
-        val roles = userPrincipal.authorities.joinToString(",") { it.authority }
+        val claims: Claims = Jwts.claims().setSubject(userPrincipal.username)
+        claims["roles"] = userPrincipal.authorities.joinToString(",") { it.authority }
 
         return Jwts.builder()
-            .setSubject(userPrincipal.username)
-            .claim("roles", roles)
-            .setIssuedAt(Date())
+            .setClaims(claims)
+            .setIssuer("IssuerName") // Задайте ваше значение Issuer
+            .setIssuedAt(now)
             .setExpiration(expiryDate)
-            .signWith(SignatureAlgorithm.HS512, jwtSecret)
+            .signWith(jwtSecretKey, SignatureAlgorithm.HS512)  // Используем HS256 вместо HS512
             .compact()
     }
 
     fun getUsernameFromJWT(token: String): String {
+        logger.info("Extracting username from the JWT token")
         val claims: Claims = Jwts.parserBuilder()
-            .setSigningKey(jwtSecret)
+            .setSigningKey(jwtSecretKey)
             .build()
             .parseClaimsJws(token)
             .body
@@ -46,11 +59,21 @@ class JwtTokenProvider {
 
     fun validateToken(authToken: String): Boolean {
         try {
-            Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(authToken)
+            logger.info("Validating the token.")
+            Jwts.parserBuilder().setSigningKey(jwtSecretKey).build().parseClaimsJws(authToken)
             return true
         } catch (ex: Exception) {
-            // Логирование ошибок
+            logger.error("Error during token validation: ${ex.message}")
         }
         return false
     }
+
+    private fun getClaimsFromToken(token: String): Claims {
+        return Jwts.parserBuilder()
+            .setSigningKey(jwtSecretKey)
+            .build()
+            .parseClaimsJws(token)
+            .body
+    }
+
 }

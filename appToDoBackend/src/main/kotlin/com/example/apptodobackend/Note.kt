@@ -7,6 +7,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.JoinColumn
 import java.time.LocalDateTime
+import jakarta.persistence.FetchType
+
 
 @Entity
 data class Note(
@@ -18,7 +20,7 @@ data class Note(
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var lastUpdated: LocalDateTime = LocalDateTime.now(),
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     var user: User? = null
 )

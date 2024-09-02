@@ -35,9 +35,12 @@ class CustomAuthenticationFilter(
         println("User ${authResult.name} successfully authenticated with authorities: ${authResult.authorities}")
 
         // Генерация JWT токена
+        logger.info("User ${authResult.name} successfully authenticated")
         val token = jwtTokenProvider.generateToken(authResult)
+        logger.info("JWT token generated: $token")
 
-        // Добавление токена в заголовок ответа
+
+
         response.addHeader("Authorization", "Bearer $token")
 
         response.contentType = "application/json"
@@ -49,7 +52,10 @@ class CustomAuthenticationFilter(
         request: jakarta.servlet.http.HttpServletRequest,
         response: jakarta.servlet.http.HttpServletResponse,
         failed: AuthenticationException
+
     ) {
+        logger.warn("Authentication failed: ${failed.message}")
+
         response.status = HttpServletResponse.SC_UNAUTHORIZED
         response.contentType = "application/json"
         response.characterEncoding = "UTF-8"
