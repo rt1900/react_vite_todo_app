@@ -86,6 +86,34 @@
   width: 30%;
 }
 
+.logoutButtonDiv {
+  width: 96%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center; /* Выравниваем по центру по вертикали */
+  margin-top: 3%;
+}
+
+.logoutButton {
+  width: 80px;
+  height: 33px;
+  font-size: small;
+  padding: 5px 10px;
+  background-color: aqua;
+}
+
+.logoutButton:hover {
+  background-color:red;
+  font-weight: bold;
+}
+
+.userEmail {
+  margin-right: 14px; /* Отступ между email и кнопкой Logout */
+  font-size: 14px;   /* Размер шрифта */
+  color: #333;       /* Цвет текста */
+  font-weight: bold; /* Жирный текст, если нужно выделить email */
+}
+
 .noteArea1 {
   padding-top: 32%;
 }
@@ -175,14 +203,6 @@ margin-right: 20px;
 
 
 
-
-
-
-
-
-
-
-
 input, textarea {
   width: 100%;
   margin-bottom: 10px;
@@ -230,7 +250,7 @@ textarea {
 
 .save:hover {
   background-color:lawngreen; /* Цвет фона при наведении */
-  border-color: blue; /* Цвет границы при наведении */
+
 }
 
 .close{
@@ -240,7 +260,6 @@ textarea {
 
 .close:hover {
   background-color:red; /* Цвет фона при наведении */
-  border-color: red; /* Цвет границы при наведении */
 }
 
 
@@ -254,3 +273,15 @@ textarea {
   width: 600px; !* Adjust size as needed *!
   pointer-events: none; !* This makes the image not interfere with clicking the button *!
 }*/
+
+
+
+.addNoteButton{
+
+  background-color: aqua;
+}
+
+.addNoteButton:hover{
+
+  background-color: greenyellow;
+}

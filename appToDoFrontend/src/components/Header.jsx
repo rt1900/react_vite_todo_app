@@ -5,14 +5,14 @@ import SigninLogin from './SigninLogin';
 import LogoutButton from './LogoutButton.jsx';
 
 
-export default function Header ({handleAddNote, onSignin, onLogin, onLogout, isAuthenticated, handleRegister }){
+export default function Header ({handleAddNote, onSignin, onLogin, onLogout, isAuthenticated, handleRegister, userEmail }){
 
 
    return(
        <div className="header">
 
            {isAuthenticated ? (
-               <LogoutButton onLogout={onLogout} />
+               <LogoutButton onLogout={onLogout} userEmail={userEmail} /> // Передаем email в LogoutButton
            ) : (
                <SigninLogin onSignin={handleRegister} onLogin={onLogin} />
            )}

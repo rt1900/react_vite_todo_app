@@ -26,7 +26,7 @@ export default function LoginModal({ onClose, onLogin }) {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required />
-                    <button type="submit">Register</button>
+                    <button type="submit">Login</button>
                 </form>
                 <button onClick={onClose}>Close</button>
             </div>

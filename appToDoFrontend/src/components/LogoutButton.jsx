@@ -1,7 +1,11 @@
-export default function LogoutButton({ onLogout }) {
+export default function LogoutButton({ onLogout, userEmail  }) {
     return (
-        <button className="logoutButton" onClick={onLogout}>
-            Logout
-        </button>
+
+        <div className="logoutButtonDiv">
+                 <span className="userEmail">{userEmail}</span> {/* Отображаем email */}
+                 <button className="logoutButton"  onClick={onLogout}>
+                    Logout
+                </button>
+        </div>
     );
 }

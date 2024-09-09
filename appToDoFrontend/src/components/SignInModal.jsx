@@ -3,10 +3,11 @@ import { useState } from 'react';
 export default function SignInModal({ onClose, onRegister }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [captcha, setCaptcha] = useState('')
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        onRegister({ email, password, captcha });
+        onRegister({ email, password });
+        onClose();
     };
     return (
         <div className="SignInModal">
@@ -27,15 +28,6 @@ export default function SignInModal({ onClose, onRegister }) {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <label>Enter the numbers from the image:</label>
-                    <input
-                        type="text"
-                        value={captcha}
-                        onChange={(e) => setCaptcha(e.target.value)}
-                        required
-                    />
-                    {/* Здесь должно быть изображение с капчей */}
-                    <p>If you don't see an image, then I'm sorry, I have bad news for you, you are unfortunately a robot. Maybe you didn't know that. Just kidding, dear human. Just click on "Register".</p>
                     <button type="submit">Register</button>
                 </form>
                 <button onClick={onClose}>Close</button>

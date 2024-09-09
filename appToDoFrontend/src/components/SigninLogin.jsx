@@ -33,13 +33,13 @@ export default function SigninLogin({ onSignin, onLogin }) {
             {isRegisterModalOpen &&
                 <SignInModal
                     onClose={handleRegisterClose}
-                    onRegister={handleRegister}
+                    onRegister={onSignin}
                 />
             }
             {isLoginModalOpen &&
                 <LoginModal
                     onClose={handleLoginClose}
-                    onLogin={handleLogin}
+                    onLogin={onLogin}
                 />
             }
         </div>
