@@ -6,6 +6,9 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.http.HttpStatus
+
 
 
 @RestController
@@ -17,19 +20,25 @@ class LoginController(
 
     @PostMapping
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<Map<String, String>> {
-        val authenticationToken = UsernamePasswordAuthenticationToken(
-            loginRequest.email,
-            loginRequest.password
-        )
+        return try {
+            val authenticationToken = UsernamePasswordAuthenticationToken(
+                loginRequest.email,
+                loginRequest.password
+            )
 
-        val authentication: Authentication = authenticationManager.authenticate(authenticationToken)
-        SecurityContextHolder.getContext().authentication = authentication
+            val authentication: Authentication = authenticationManager.authenticate(authenticationToken)
+            SecurityContextHolder.getContext().authentication = authentication
 
-        val jwtToken = jwtTokenProvider.generateToken(authentication)
+            val jwtToken = jwtTokenProvider.generateToken(authentication)
+            val tokenResponse = mapOf("token" to jwtToken)
 
-        val tokenResponse = mapOf("token" to jwtToken)
-        return ResponseEntity.ok(tokenResponse)
+            ResponseEntity.ok(tokenResponse)
+        } catch (ex: BadCredentialsException) {
+            val errorResponse = mapOf("message" to "Login failed: Invalid credentials")
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse)
+        }
     }
+
 }
 
 data class LoginRequest(

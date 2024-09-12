@@ -30,4 +30,6 @@ class CustomUserDetailsService(private val userRepository: UserRepository) : Use
             println("User ${user.email} has authorities: $authorities")
         }
     }
+
+
 }
