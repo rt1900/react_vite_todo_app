@@ -1,9 +1,6 @@
 package com.example.apptodobackend
 
-import com.example.apptodobackend.Note
-import com.example.apptodobackend.NoteRepository
-import com.example.apptodobackend.NoteService
-import com.example.apptodobackend.UserRepository
+
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
@@ -136,13 +133,19 @@ class NoteServiceTest {
     }
 
 
+    // Создаём mock для noteRepository и noteService
+    private val noteRepository = mock(NoteRepository::class.java)
+    private val noteService = NoteService(noteRepository, mock(UserRepository::class.java))
+    @Test
+    fun `getNoteById should throw exception if note does not exist`() {
+        // Мокаем репозиторий, чтобы возвращать пустой результат (заметка не найдена)
+        `when`(noteRepository.findById(1L)).thenReturn(Optional.empty())
 
-
-
-
-
-
-
+        // Проверяем, что метод выбрасывает исключение NoteNotFoundException, если заметка не найдена
+        assertThrows(NoteNotFoundException::class.java) {
+            noteService.getNoteById(1L)
+        }
+    }
 
 
 

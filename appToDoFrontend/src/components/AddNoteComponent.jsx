@@ -1,6 +1,6 @@
 import List from './List';
 
-export default function AddNoteComponent({ notes, handleDeleteNote, handleNoteClick, handleToggleComplete }) {
+export default function AddNoteComponent({ notes, handleDeleteNote, handleNoteClick, handleToggleComplete, isAdmin }) {
     return (
         <div className="noteArea1">
             <div className="noteArea2">
@@ -10,7 +10,8 @@ export default function AddNoteComponent({ notes, handleDeleteNote, handleNoteCl
                         note={note} 
                         handleDeleteNote={handleDeleteNote}
                         handleNoteClick={handleNoteClick}
-                        handleToggleComplete={handleToggleComplete} 
+                        handleToggleComplete={handleToggleComplete}
+                        isAdmin={isAdmin} // Передаем информацию, является ли пользователь админом
                     />
                 ))} 
             </div>

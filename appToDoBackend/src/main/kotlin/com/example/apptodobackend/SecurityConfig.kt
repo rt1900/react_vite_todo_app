@@ -37,18 +37,18 @@ class SecurityConfig(val customUserDetailsService: CustomUserDetailsService) {
         logger.info("Configuring the security filter chain")
 
 
-        val jwtTokenProvider = JwtTokenProvider()
+        val jwtTokenProvider = JwtTokenProvider()  // do I need this?
         http
             .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { authz ->
                 authz
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/api/user/**", "/api/notes/**").hasRole("USER")
+                    .requestMatchers("/api/user/**", "/api/notes/**").hasAnyRole("USER", "ADMIN")
                     .requestMatchers("/", "/api/register", "/api/login", "/api/logout").permitAll()
 //                    .requestMatchers("/api/logout").authenticated()
             }
             .addFilterBefore(JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter::class.java)
-            .addFilterBefore(CustomAuthenticationFilter(authenticationManager(http), jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(CustomAuthenticationFilter(authenticationManager(http), jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)   // do I need this?
 
             .logout { logout ->
                 logout

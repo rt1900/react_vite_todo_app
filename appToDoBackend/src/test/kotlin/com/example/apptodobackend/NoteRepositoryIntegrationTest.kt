@@ -4,12 +4,19 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.Rollback
+import org.springframework.transaction.annotation.Transactional
 
-@SpringBootTest
+@SpringBootTest(properties = ["spring.config.name=application-test"])
+@Transactional
+@Rollback
 class NoteRepositoryIntegrationTest {
 
     @Autowired
-    lateinit var noteRepository: NoteRepository
+    private lateinit var noteRepository: NoteRepository
+
+    @Autowired
+    private lateinit var userRepository: UserRepository
 
     @Test
     fun `test save and retrieve note`() {
@@ -35,5 +42,26 @@ class NoteRepositoryIntegrationTest {
         assertNotNull(foundNote)
         assertEquals("Test Note", foundNote?.title)
         assertEquals("This is a test note", foundNote?.text)
+    }
+
+    @Test
+    fun `test findByUser should return notes for a specific user`() {
+        // Создаем пользователя и сохраняем его
+        val user = User(username = "testUser", email = "test@example.com", password = "password123", role = "USER")
+        userRepository.save(user)
+
+        // Создаем несколько заметок для пользователя
+        val note1 = Note(title = "Note 1", text = "Text 1", user = user)
+        val note2 = Note(title = "Note 2", text = "Text 2", user = user)
+        noteRepository.save(note1)
+        noteRepository.save(note2)
+
+        // Выполняем метод findByUser
+        val notes = noteRepository.findByUser(user)
+
+        // Проверяем, что возвращены правильные заметки
+        assertEquals(2, notes.size)
+        assertTrue(notes.any { it.title == "Note 1" })
+        assertTrue(notes.any { it.title == "Note 2" })
     }
 }

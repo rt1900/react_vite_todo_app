@@ -23,4 +23,8 @@ data class Note(
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     var user: User? = null
-)
+) {
+    // Добавляем геттер для email пользователя
+    val userEmail: String?
+        get() = user?.email
+}

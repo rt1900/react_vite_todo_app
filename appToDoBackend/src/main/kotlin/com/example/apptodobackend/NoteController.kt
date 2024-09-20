@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 
 @CrossOrigin(origins = ["http://localhost:5178"])
@@ -21,9 +22,16 @@ class NoteController {
     lateinit var noteService: NoteService
 
     @GetMapping
-    fun getAllNotes(authentication: Authentication): List<Note> {
+    fun getAllNotes(authentication: Authentication): ResponseEntity<List<Note>> {
         val currentUser = authentication.principal as UserDetails
-        return noteService.getAllNotesForCurrentUser(currentUser.username)
+
+        return if (currentUser.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            // Если это админ, возвращаем все заметки
+            ResponseEntity.ok(noteService.getAllNotes())  // Этот метод должен возвращать все заметки
+        } else {
+            // Если это обычный пользователь, возвращаем только его заметки
+            ResponseEntity.ok(noteService.getAllNotesForCurrentUser(currentUser.username))
+        }
     }
 
 

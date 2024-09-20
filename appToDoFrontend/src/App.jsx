@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
-import Header from './components/Header';  
+import Header from './components/Header';
 import AddNoteComponent from './components/AddNoteComponent';
 import NoteModal from './components/NoteModal';
 
@@ -27,13 +27,24 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
 
-    /*    useEffect(() => {
+        useEffect(() => {
             const token = localStorage.getItem('token');
+            const storedEmail = localStorage.getItem('userEmail'); // Загружаем email из localStorage
+
+            if (storedEmail) {
+                setUserEmail(storedEmail); // Восстанавливаем email
+            }
 
             setLoading(true);
             if (token) {
+                const decodedToken = parseJwt(token);
+                if (decodedToken && decodedToken.roles && decodedToken.roles.includes('ROLE_ADMIN')) {
+                    setIsAdmin(true); // Устанавливаем isAdmin в зависимости от токена
+                }
+
                 setIsAuthenticated(true);
                 axios.get('http://localhost:8080/api/notes', {
                     headers: {
@@ -55,9 +66,9 @@ function App() {
                 setLoading(false);
                 console.error('No token found, unable to fetch notes.');
             }
-        }, []);*/
+        }, []);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             setIsAuthenticated(true); // Устанавливаем аутентификацию
@@ -65,7 +76,7 @@ function App() {
         } else {
             setIsAuthenticated(false); // Сбрасываем аутентификацию, если токена нет
         }
-    }, []);
+    }, []); */
 
 
     const loadNotes = () => {
@@ -160,7 +171,7 @@ function App() {
       const noteToUpdate = notes.find(note => note.id === id);
       const updatedNote = { ...noteToUpdate, isCompleted };
       const token = localStorage.getItem('token');
-    
+
       axios.put(`http://localhost:8080/api/notes/${id}`, updatedNote, {
           headers: {
               Authorization: `Bearer ${token}`, // Добавляем токен в заголовок Authorization
@@ -204,7 +215,16 @@ function App() {
                     localStorage.setItem('token', response.data.token);
                     const decodedToken = parseJwt(response.data.token);
                     if (decodedToken && decodedToken.sub) {
-                        setUserEmail(decodedToken.sub); // Устанавливаем email пользователя
+
+                        setUserEmail(decodedToken.sub); // Обновляем состояние userEmail
+                        localStorage.setItem('userEmail', decodedToken.sub); // Сохраняем email в localStorage
+                    }
+                    if (decodedToken && decodedToken.roles && decodedToken.roles.includes('ROLE_ADMIN')) {
+                        // Если это админ, можно сохранить информацию о роли
+                        setIsAdmin(true); // Устанавливаем состояние isAdmin
+                    } else {
+                        setIsAdmin(false); // Если не админ, сбрасываем состояние isAdmin
+                        console.log('Admin logged in');
                     }
                     loadNotes(); // Загрузка заметок сразу после входа в систему
                 } else {
@@ -223,7 +243,10 @@ function App() {
     const handleLogout = () => {
         setIsAuthenticated(false);
         setNotes([]); // Очищаем заметки
+        setUserEmail(''); // Очищаем email из состояния
+        setIsAdmin(false); // Сбрасываем состояние isAdmin
         localStorage.removeItem('token'); // Удаляем токен из локального хранилища
+        localStorage.removeItem('userEmail'); // Удаляем email из локального хранилища
     };
 
     if (loading) {
@@ -249,6 +272,7 @@ function App() {
             handleDeleteNote={handleDeleteNote}//+
             handleNoteClick={handleNoteClick} //+
             handleToggleComplete={handleToggleComplete}
+            isAdmin={isAdmin} // Передаем isAdmin
         />
 
         {selectedNote && (

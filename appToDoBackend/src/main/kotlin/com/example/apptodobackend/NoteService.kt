@@ -13,14 +13,14 @@ class NoteService(private val noteRepository: NoteRepository, private val userRe
     private val logger: Logger = LoggerFactory.getLogger(NoteService::class.java)
 
 
-
-
     fun getAllNotes(): List<Note> {
         return noteRepository.findAll().sortedByDescending { it.lastUpdated }
     }
 
     fun getNoteById(id: Long): Note? {
-        return noteRepository.findById(id).orElse(null)
+        return noteRepository.findById(id).orElseThrow {
+            NoteNotFoundException("Note with id $id not found")
+        }
     }
 
 
