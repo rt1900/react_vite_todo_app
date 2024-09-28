@@ -55,7 +55,7 @@ class NoteService(private val noteRepository: NoteRepository, private val userRe
             noteRepository.deleteById(id)
             true
         } else {
-            false
+            throw NoteNotFoundException("Note with id $id not found")
         }
     }
 

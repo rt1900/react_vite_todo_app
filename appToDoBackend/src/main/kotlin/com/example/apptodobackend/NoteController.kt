@@ -37,17 +37,23 @@ class NoteController {
 
     @GetMapping("/{id}")
     fun getNoteById(@PathVariable id: Long, authentication: Authentication): ResponseEntity<Note> {
-        val note = noteService.getNoteById(id)
+        val note = noteService.getNoteById(id)!!
         logger.info("Loaded note: $note")
         logger.info("Note user email: ${note?.user?.email}, Authenticated user: ${authentication.name}")
 
-        return if (note != null && note.user?.email == authentication.name) {
+        return if (note.user?.email == authentication.name) {
             logger.info("Access granted to user: ${authentication.name}")
             ResponseEntity.ok(note)
         } else {
             logger.info("Access denied for user: ${authentication.name}")
             ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoteNotFoundException::class)
+    fun handleNoteNotFoundException(ex: NoteNotFoundException): ResponseEntity<String> {
+        return ResponseEntity(ex.message, HttpStatus.NOT_FOUND)
     }
 
     @PreAuthorize("isAuthenticated()")

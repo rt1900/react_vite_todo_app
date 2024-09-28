@@ -1,4 +1,4 @@
-package com.example.apptodobackend  //integr,Tests
+package com.example.apptodobackend  //integration test
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

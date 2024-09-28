@@ -19,7 +19,7 @@ class LoginController(
 ) {
 
     @PostMapping
-    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<Map<String, String>> {
+    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<Map<String, String?>> {
         return try {
             val authenticationToken = UsernamePasswordAuthenticationToken(
                 loginRequest.email,
@@ -30,14 +30,21 @@ class LoginController(
             SecurityContextHolder.getContext().authentication = authentication
 
             val jwtToken = jwtTokenProvider.generateToken(authentication)
-            val tokenResponse = mapOf("token" to jwtToken)
+            val role = authentication.authorities.firstOrNull()?.authority      // Получаем роль пользователя
+
+            // Добавляем и токен, и роль в ответ
+            val tokenResponse: Map<String, String?> = mapOf(
+                "token" to jwtToken,
+                "role" to role
+            )
 
             ResponseEntity.ok(tokenResponse)
         } catch (ex: BadCredentialsException) {
-            val errorResponse = mapOf("message" to "Login failed: Invalid credentials")
+            val errorResponse: Map<String, String?> = mapOf("message" to "Login failed: Invalid credentials")
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse)
         }
     }
+
 
 }
 
