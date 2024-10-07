@@ -2,49 +2,45 @@ package com.example.apptodobackend
 
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+
 
 
 @Service
-class NoteService(private val noteRepository: NoteRepository) {
+class NoteService(private val noteRepository: NoteRepository, private val userRepository: UserRepository) {
+    private val logger: Logger = LoggerFactory.getLogger(NoteService::class.java)
 
-    /*fun getAllNotes(): List<Note> {
-        return noteRepository.findAll()
-    }*/
 
     fun getAllNotes(): List<Note> {
-        return noteRepository.findAll().sortedByDescending { it.lastUpdated } // сортируем по последнему обновлению
+        return noteRepository.findAll().sortedByDescending { it.lastUpdated }
     }
 
     fun getNoteById(id: Long): Note? {
-        return noteRepository.findById(id).orElse(null)
+        return noteRepository.findById(id).orElseThrow {
+            NoteNotFoundException("Note with id $id not found")
+        }
     }
 
-   /* fun saveNote(note: Note): Note {
-        return noteRepository.save(note)
-    }*/
 
     fun saveNote(note: Note): Note {
-        note.lastUpdated = LocalDateTime.now() // устанавливаем время создания
+        note.createdAt = LocalDateTime.now()
+        note.lastUpdated = LocalDateTime.now()
+        logger.info("Saving the note for user: ${note.user?.username ?: "Unknown use"}")
         return noteRepository.save(note)
     }
 
-    //это черновик:
-    /*fun updateNote(id: Long, updatedNote: Note): Note? {
-        return if (noteRepository.existsById(id)) {
-            noteRepository.save(updatedNote.copy(id = id))
-        } else {
-            null
-        }
-    }*/
 
 
     fun updateNote(id: Long, updatedNote: Note): Note? {
         return if (noteRepository.existsById(id)) {
             val existingNote = noteRepository.findById(id).orElse(null)
             if (existingNote != null) {
+                existingNote.title = updatedNote.title
                 existingNote.text = updatedNote.text
                 existingNote.isCompleted = updatedNote.isCompleted
-                existingNote.lastUpdated = LocalDateTime.now() // обновляем поле
+                existingNote.lastUpdated = LocalDateTime.now()
                 noteRepository.save(existingNote)
             } else {
                 null
@@ -59,7 +55,7 @@ class NoteService(private val noteRepository: NoteRepository) {
             noteRepository.deleteById(id)
             true
         } else {
-            false
+            throw NoteNotFoundException("Note with id $id not found")
         }
     }
 
@@ -74,5 +70,24 @@ class NoteService(private val noteRepository: NoteRepository) {
             null
         }
     }
+
+    fun findUserByEmail(email: String): User? {
+        return userRepository.findByEmail(email)
+    }
+
+    fun getNotesByUser(user: User): List<Note> {
+        return noteRepository.findByUser(user)
+    }
+
+    fun getAllNotesForCurrentUser(username: String): List<Note> {
+        val user = userRepository.findByEmail(username)
+        return if (user != null) {
+            getNotesByUser(user)
+        } else {
+            emptyList()
+        }
+    }
+
+
 
 }
