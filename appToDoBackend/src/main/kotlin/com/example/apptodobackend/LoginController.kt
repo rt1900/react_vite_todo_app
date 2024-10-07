@@ -30,9 +30,9 @@ class LoginController(
             SecurityContextHolder.getContext().authentication = authentication
 
             val jwtToken = jwtTokenProvider.generateToken(authentication)
-            val role = authentication.authorities.firstOrNull()?.authority      // Получаем роль пользователя
+            val role = authentication.authorities.firstOrNull()?.authority      // Getting the user role
 
-            // Добавляем и токен, и роль в ответ
+            // Adding both the token and the role to the response
             val tokenResponse: Map<String, String?> = mapOf(
                 "token" to jwtToken,
                 "role" to role

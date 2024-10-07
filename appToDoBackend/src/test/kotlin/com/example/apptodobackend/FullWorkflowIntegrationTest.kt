@@ -59,12 +59,12 @@ class FullWorkflowIntegrationTest {
 
         // Extract the Authorization token from the login response
         val authToken = loginResponse.body?.let { parseAuthToken(it) }
-        println("Auth token: $authToken")  // Выведем токен в консоль для проверки
+        println("Auth token: $authToken")  // Output the token to the console for verification
 
-        // Ensure the token is not null
+
         assertNotNull(authToken, "Authorization token should not be null")
 
-        // Step 3: Create a new note (using Authorization token)
+        //Create a new note (using Authorization token)
         val createNoteUrl = "http://localhost:$port/api/notes"
         val noteBody = """
             {
@@ -72,17 +72,17 @@ class FullWorkflowIntegrationTest {
                 "text": "This is a test note"
             }
         """
-        headers.set("Authorization", "Bearer $authToken")  // Добавляем токен в заголовок
+        headers.set("Authorization", "Bearer $authToken")  // Adding the token to the header
         val createNoteRequest = HttpEntity(noteBody, headers)
         val createNoteResponse = restTemplate.postForEntity(createNoteUrl, createNoteRequest, String::class.java)
         assertEquals(HttpStatus.OK, createNoteResponse.statusCode)
 
-        // Step 4: Get the created note
+        // Get the created note
         val getNotesUrl = "http://localhost:$port/api/notes"
         val getNotesResponse = restTemplate.exchange(getNotesUrl, HttpMethod.GET, HttpEntity(null, headers), String::class.java)
         assertEquals(HttpStatus.OK, getNotesResponse.statusCode)
 
-        // Step 5: Edit the note (Use PUT instead of POST)
+        // Edit the note (Use PUT instead of POST)
         val editNoteUrl = "http://localhost:$port/api/notes/1"
         val editNoteBody = """
             {
@@ -91,18 +91,18 @@ class FullWorkflowIntegrationTest {
             }
         """
         val editNoteRequest = HttpEntity(editNoteBody, headers)
-        val editNoteResponse = restTemplate.exchange(editNoteUrl, HttpMethod.PUT, editNoteRequest, String::class.java)  // Используем PUT
+        val editNoteResponse = restTemplate.exchange(editNoteUrl, HttpMethod.PUT, editNoteRequest, String::class.java)  // Using PUT
         assertEquals(HttpStatus.OK, editNoteResponse.statusCode)
 
-        // Step 6: Delete the note
+        // Delete the note
         val deleteNoteUrl = "http://localhost:$port/api/notes/1"
         val deleteNoteResponse = restTemplate.exchange(deleteNoteUrl, HttpMethod.DELETE, HttpEntity(null, headers), String::class.java)
 
-        // Измените проверку статуса с 200 на 204
+        // Changing the status check from 200 to 204
         assertEquals(HttpStatus.NO_CONTENT, deleteNoteResponse.statusCode)
 
 
-        // Step 7: Logout the user
+        //  Logout the user
         val logoutUrl = "http://localhost:$port/api/logout"
         val logoutResponse = restTemplate.postForEntity(logoutUrl, null, String::class.java)
         assertEquals(HttpStatus.OK, logoutResponse.statusCode)

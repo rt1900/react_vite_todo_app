@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 export default function SignInModal({ onClose, onRegister }) {
@@ -28,10 +29,16 @@ export default function SignInModal({ onClose, onRegister }) {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <button type="submit">Register</button>
+                    <button className="signinLoginSave" type="submit">Register</button>
+                    <button className="signinLoginClose" onClick={onClose}>Close</button>
                 </form>
-                <button onClick={onClose}>Close</button>
             </div>
         </div>
     );
 }
+
+
+SignInModal.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    onRegister: PropTypes.func.isRequired,
+};

@@ -30,48 +30,49 @@ class UserControllerTest {
         val passwordEncoder = mock(PasswordEncoder::class.java)
         val userService = RegistrationController(userRepository, passwordEncoder)
 
-        // Создаем нового пользователя
+        // Creating a new user
         val newUser = User(username = "newUser", email = "new@example.com", password = "password")
 
-        // Мокаем, что пользователя с таким именем ещё нет
+        // Mocking that there is no user with the same email
         `when`(userRepository.findByEmail(newUser.email)).thenReturn(null)
 
-        // Мокаем хеширование пароля
+        // Mocking password hashing
         `when`(passwordEncoder.encode(newUser.password)).thenReturn("hashedPassword")
 
-        // Вызываем метод регистрации
+        // Calling the registration method
         val response = userService.registerUser(newUser)
 
-        // Проверяем, что пользователь успешно зарегистрирован
+        // Verifying that the user was successfully registered
         assertEquals(HttpStatus.OK, response.statusCode)
-        verify(userRepository).save(any(User::class.java))  // Проверяем, что пользователь был сохранён в базе данных
+        verify(userRepository).save(any(User::class.java))  // Verifying that the user was saved to the database
     }
+
 
 
     @Test
     fun `test loginUser should authenticate user successfully`() {
-        // Мокаем зависимости
+        // Mocking dependencies
         val authenticationManager = mock(AuthenticationManager::class.java)
         val jwtTokenProvider = mock(JwtTokenProvider::class.java)
         val loginController = LoginController(authenticationManager, jwtTokenProvider)
 
-        // Данные для входа
+        // Login credentials
         val loginRequest = LoginRequest(email = "user@example.com", password = "password")
 
-        // Мокаем процесс аутентификации
+        // Mocking authentication process
         val auth = mock(Authentication::class.java)
         `when`(auth.name).thenReturn(loginRequest.email)
         `when`(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken::class.java)))
             .thenReturn(auth)
 
-        // Мокаем генерацию токена
+        // Mocking token generation
         val expectedToken = "mocked-jwt-token"
         `when`(jwtTokenProvider.generateToken(auth)).thenReturn(expectedToken)
 
-        // Вызываем метод входа в систему
+        // Calling the login method
         val response = loginController.login(loginRequest)
 
-        // Проверяем, что токен был возвращен
+        // Verifying that the token was returned
         assertEquals(expectedToken, response.body?.get("token"))
     }
 
@@ -82,36 +83,36 @@ class UserControllerTest {
         val jwtTokenProvider = mock(JwtTokenProvider::class.java)
         val loginController = LoginController(authenticationManager, jwtTokenProvider)
 
-        // Данные для входа с неправильным паролем
+        // Login credentials with an incorrect password
         val loginRequest = LoginRequest(email = "user@example.com", password = "wrongPassword")
 
-        // Мокаем неудачную аутентификацию
+        // Mocking failed authentication
         `when`(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken::class.java)))
             .thenThrow(BadCredentialsException("Invalid credentials"))
 
-        // Вызываем метод входа
+        // Calling the login method
         val response = loginController.login(loginRequest)
 
-        // Проверяем, что статус ошибки и сообщение
+        // Verifying the error status and message
         assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
         assertEquals("Login failed: Invalid credentials", response.body!!["message"])
     }
 
     @Test
     fun `test logout should return success response`() {
-        // Мокируем LogoutSuccessHandler
+        // Mocking LogoutSuccessHandler
         val logoutSuccessHandler = mock(LogoutSuccessHandler::class.java)
 
-        // Мокаем объекты request, response и authentication
+        // Mocking request, response, and authentication objects
         val request = mock(HttpServletRequest::class.java)
         val response = mock(HttpServletResponse::class.java)
         val authentication = mock(Authentication::class.java)
 
-        // Мокаем writer для HttpServletResponse
+        // Mocking writer for HttpServletResponse
         val writer = mock(PrintWriter::class.java)
         `when`(response.writer).thenReturn(writer)
 
-        // Определяем поведение при вызове onLogoutSuccess
+        // Defining behavior when onLogoutSuccess is called
         doAnswer { invocation ->
             val response = invocation.getArgument<HttpServletResponse>(1)
             response.status = HttpServletResponse.SC_OK
@@ -119,10 +120,10 @@ class UserControllerTest {
             null
         }.`when`(logoutSuccessHandler).onLogoutSuccess(any(HttpServletRequest::class.java), any(HttpServletResponse::class.java), any(Authentication::class.java))
 
-        // Вызываем onLogoutSuccess и проверяем, что статус установлен в 200
+        // Calling onLogoutSuccess and checking that the status is set to 200
         logoutSuccessHandler.onLogoutSuccess(request, response, authentication)
 
-        // Проверяем, что статус ответа был установлен
+        // Verifying that the response status was set
         verify(response).status = HttpServletResponse.SC_OK
         verify(response.writer).write("Logout successful")
     }

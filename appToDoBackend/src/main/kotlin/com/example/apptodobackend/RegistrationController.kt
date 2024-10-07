@@ -15,14 +15,15 @@ class RegistrationController(
     @PostMapping
     fun registerUser(@RequestBody user: User): ResponseEntity<String> {
         if (userRepository.findByEmail(user.username) != null) {
-            return ResponseEntity("Username already exists", HttpStatus.BAD_REQUEST)
+            return ResponseEntity("Ah, you scammer! Trying to register with someone else's email address?!\n" +
+                    "That's it!!! We're calling the FBI!", HttpStatus.BAD_REQUEST)
         }
 
         val newUser = User(
             username = user.username,
-            password = passwordEncoder.encode(user.password), // Захеширую пароль
+            password = passwordEncoder.encode(user.password), // Hashing the password
             email = user.email,
-            role = "ROLE_USER" // Устанавливаю роль по умолчанию
+            role = "ROLE_USER" //Setting the default role
         )
 
         userRepository.save(newUser)

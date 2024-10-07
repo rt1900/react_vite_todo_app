@@ -1,7 +1,6 @@
 package com.example.apptodobackend
 
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -13,7 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @Component
 class JwtAuthenticationFilter(
     private val jwtTokenProvider: JwtTokenProvider,
-    private val userDetailsService: CustomUserDetailsService // Ваш сервис для загрузки данных о пользователях
+    private val userDetailsService: CustomUserDetailsService // Service for loading user data
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(

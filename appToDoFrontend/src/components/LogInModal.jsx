@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 export default function LoginModal({ onClose, onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    //const [captcha, setCaptcha] = useState('')
+    // const [captcha, setCaptcha] = useState('')
     const handleSubmit = (e) => {
         e.preventDefault();
         onLogin({ email, password });
@@ -25,11 +26,16 @@ export default function LoginModal({ onClose, onLogin }) {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required />
-                    <button type="submit">Login</button>
+                        required/>
+                    <button className="signinLoginSave" type="submit">Login</button>
+                    <button className="signinLoginClose" onClick={onClose}>Close</button>
                 </form>
-                <button onClick={onClose}>Close</button>
             </div>
         </div>
     );
 }
+
+LoginModal.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    onLogin: PropTypes.func.isRequired,
+};

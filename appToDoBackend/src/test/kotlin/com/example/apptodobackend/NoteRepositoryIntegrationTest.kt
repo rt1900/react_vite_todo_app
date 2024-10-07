@@ -27,18 +27,18 @@ class NoteRepositoryIntegrationTest {
             isCompleted = false
         )
 
-        // Сохраняем заметку в базе данных
+        // Saving the note to the database
         val savedNote = noteRepository.save(note)
 
-        // Проверяем, что заметка успешно сохранилась и вернулась с корректными данными
+        // Verifying that the note was successfully saved and returned with correct data
         assertNotNull(savedNote.id)
         assertEquals("Test Note", savedNote.title)
         assertEquals("This is a test note", savedNote.text)
 
-        // Извлекаем заметку из базы данных по ее ID
+        // Retrieving the note from the database by its ID
         val foundNote = noteRepository.findById(savedNote.id!!).orElse(null)
 
-        // Проверяем, что извлеченная заметка соответствует сохраненной
+        // Verifying that the retrieved note matches the saved one
         assertNotNull(foundNote)
         assertEquals("Test Note", foundNote?.title)
         assertEquals("This is a test note", foundNote?.text)
@@ -46,20 +46,20 @@ class NoteRepositoryIntegrationTest {
 
     @Test
     fun `test findByUser should return notes for a specific user`() {
-        // Создаем пользователя и сохраняем его
+        // Creating and saving a user
         val user = User(username = "testUser", email = "test@example.com", password = "password123", role = "USER")
         userRepository.save(user)
 
-        // Создаем несколько заметок для пользователя
+        // Creating several notes for the user
         val note1 = Note(title = "Note 1", text = "Text 1", user = user)
         val note2 = Note(title = "Note 2", text = "Text 2", user = user)
         noteRepository.save(note1)
         noteRepository.save(note2)
 
-        // Выполняем метод findByUser
+        // Executing the findByUser method
         val notes = noteRepository.findByUser(user)
 
-        // Проверяем, что возвращены правильные заметки
+        // Verifying that the correct notes are returned
         assertEquals(2, notes.size)
         assertTrue(notes.any { it.title == "Note 1" })
         assertTrue(notes.any { it.title == "Note 2" })

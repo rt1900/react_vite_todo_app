@@ -29,7 +29,7 @@ class LoginControllerTest {
 
     @Test
     fun `test admin login with default credentials`() {
-        // 1. Создаем администратора вручную в тестовой базе данных
+        // Manually creating an administrator in the test database
         val admin = User(
             username = "adminmetro@gmail.com",
             email = "adminmetro@gmail.com",
@@ -38,7 +38,7 @@ class LoginControllerTest {
         )
         userRepository.save(admin)
 
-        // 2. Создаем JSON объект с логином и паролем администратора
+        // Creating a JSON object with the administrator's login and password
         val loginRequest = """
         {
             "email": "adminmetro@gmail.com",
@@ -46,15 +46,15 @@ class LoginControllerTest {
         }
     """.trimIndent()
 
-        // 3. Отправляем запрос на логин администратора
+        // Sending a request to log in the administrator
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginRequest)
         )
-            .andExpect(MockMvcResultMatchers.status().isOk) // Ожидаем статус 200 OK
-            .andExpect(MockMvcResultMatchers.jsonPath("$.token").exists()) // Проверяем, что возвращается токен
-            .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("ROLE_ADMIN")) // Проверяем, что роль — администратор
+            .andExpect(MockMvcResultMatchers.status().isOk) // Expecting status 200 OK
+            .andExpect(MockMvcResultMatchers.jsonPath("$.token").exists()) // Verifying that a token is returned
+            .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("ROLE_ADMIN")) // Verifying that the role is administrator
     }
 
 
@@ -63,16 +63,16 @@ class LoginControllerTest {
 
     @Test
     fun `test successful login`() {
-        // 1. Создаем пользователя в базе данных для теста
+        // Creating a user in the database for testing
         val user = User(
             username = "test45@example.com",
             email = "test45@example.com",
             password = passwordEncoder.encode("password"),
             role = "ROLE_USER"
         )
-        userRepository.save(user) // Сохраняем пользователя в базе данных
+        userRepository.save(user) // Saving the user to the database
 
-        // 2. Создаем JSON объект с логином и паролем
+        // Creating a JSON object with the login and password
         val loginRequest = """
             {
                 "email": "test45@example.com",
@@ -80,29 +80,29 @@ class LoginControllerTest {
             }
         """.trimIndent()
 
-        // 3. Отправляем запрос на логин
+        // Sending a login request
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginRequest)
         )
-            .andExpect(MockMvcResultMatchers.status().isOk) // Ожидаем статус 200 OK
-            .andExpect(MockMvcResultMatchers.jsonPath("$.token").exists()) // Проверяем, что возвращается токен
-            .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("ROLE_USER")) // Проверяем, что роль - обычный пользователь
+            .andExpect(MockMvcResultMatchers.status().isOk) // Expecting status 200 OK
+            .andExpect(MockMvcResultMatchers.jsonPath("$.token").exists()) // Verifying that a token is returned
+            .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("ROLE_USER")) // Verifying that the role is a regular user
     }
 
     @Test
     fun `test unsuccessful login with wrong password`() {
-        // 1. Создаем пользователя в базе данных для теста
+        // Creating a user in the database for testing
         val user = User(
             username = "test48@example.com",
             email = "test46@example.com",
-            password = passwordEncoder.encode("correctPassword"), // Указываем правильный пароль
+            password = passwordEncoder.encode("correctPassword"), // Specifying the correct password
             role = "ROLE_USER"
         )
-        userRepository.save(user) // Сохраняем пользователя в базе данных
+        userRepository.save(user) // Saving the user to the database
 
-        // 2. Создаем JSON объект с логином и неверным паролем
+        // Creating a JSON object with the login and an incorrect password
         val loginRequest = """
         {
             "email": "test48@example.com",
@@ -110,28 +110,28 @@ class LoginControllerTest {
         }
     """.trimIndent()
 
-        // 3. Отправляем запрос на логин с неправильным паролем
+        // Sending a login request with the incorrect password
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginRequest)
         )
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized) // Ожидаем статус 401 Unauthorized
-            .andExpect(MockMvcResultMatchers.jsonPath("$.token").doesNotExist()) // Токен не должен существовать
+            .andExpect(MockMvcResultMatchers.status().isUnauthorized) //Expecting status 401 Unauthorized
+            .andExpect(MockMvcResultMatchers.jsonPath("$.token").doesNotExist()) //The token should not exist
     }
 
     @Test
     fun `test unsuccessful login with wrong email`() {
-        // 1. Создаем пользователя в базе данных для теста
+        //  Creating a user in the database for testing
         val user = User(
             username = "test46@example.com",
             email = "test46@example.com",
-            password = passwordEncoder.encode("correctPassword"), // Указываем правильный пароль
+            password = passwordEncoder.encode("correctPassword"), // Specifying the correct password
             role = "ROLE_USER"
         )
-        userRepository.save(user) // Сохраняем пользователя в базе данных
+        userRepository.save(user) //Saving the user to the database
 
-        // 2. Создаем JSON объект с логином и неверным паролем
+        // Creating a JSON object with the login and an incorrect password
         val loginRequest = """
         {
             "email": "wrong@example.com",
@@ -139,14 +139,14 @@ class LoginControllerTest {
         }
     """.trimIndent()
 
-        // 3. Отправляем запрос на логин с неправильным паролем
+        //Sending a login request with the incorrect password
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginRequest)
         )
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized) // Ожидаем статус 401 Unauthorized
-            .andExpect(MockMvcResultMatchers.jsonPath("$.token").doesNotExist()) // Токен не должен существовать
+            .andExpect(MockMvcResultMatchers.status().isUnauthorized) // Expecting status 401 Unauthorized
+            .andExpect(MockMvcResultMatchers.jsonPath("$.token").doesNotExist()) // The token should not exist
     }
 
 }

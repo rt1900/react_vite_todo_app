@@ -14,18 +14,20 @@
   justify-content: center;
   align-items: center;
   height: 220px;
-  background-color: white;
+
   flex-direction: column;
 }
 
 .colorMetro {
-  color: blue;
+  color: white;
   margin-top: 0px;
   margin-bottom: 0px;
+  font-family: "Gotham-Bold", Arial, sans-serif;
+
 }
 
 .toDo{
-  margin: 0px 
+  margin: 0px;
 }
 
 .logo {
@@ -47,6 +49,10 @@
 .ToDoAppAndAddNote {
   margin-top: 0px;
   margin-bottom: 3%;
+  color: #ff4f00;
+  font-weight: 1000;
+  font-size: 2em;
+
 }
 
 .signin-login-buttons{
@@ -54,20 +60,36 @@
   padding-top: 2%;
   padding-left: 87%;
   margin-right: 1%;
-  /*width: 230vh;*/
+  display: flex;
+  justify-content: center;
 
 }
 
-.signinlogin{
-  height: 4vh;
+.signinButton{
   font-size: 1.5vh;
   font-weight: 600;
   color: blue;
+  margin-left: 4px;
+  padding: 0.5em 1em;
 }
 
-.signinlogin:hover {
+.signinButton:hover {
   background-color:aqua;
 }
+
+.loginButton{
+  font-size: 1.5vh;
+  font-weight: 600;
+  color: blue;
+  margin-left: 4px;
+  padding: 0.5em 1em;
+}
+
+.loginButton:hover {
+  background-color:aqua;
+}
+
+
 
 .SignInModal {
   position: fixed;
@@ -88,11 +110,35 @@
   width: 30%;
 }
 
+.signinLoginSave{
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  color: blue;
+  padding: 0.5em 1em;
+}
+
+.signinLoginSave:hover  {
+  background-color:lawngreen;
+
+}
+
+.signinLoginClose {
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  color: blue;
+  padding: 0.5em 1em;
+}
+
+.signinLoginClose:hover  {
+  background-color:#ff4f00;
+
+}
+
 .logoutButtonDiv {
   width: 96%;
   display: flex;
   justify-content: flex-end;
-  align-items: center; /* Выравниваем по центру по вертикали */
+  align-items: center;
   margin-top: 0%;
 }
 
@@ -105,43 +151,58 @@
 }
 
 .logoutButton:hover {
-  background-color:red;
+  background-color:#ff4f00;
   font-weight: bold;
 }
 
 .userEmail {
-  margin-right: 14px; /* Отступ между email и кнопкой Logout */
-  font-size: 14px;   /* Размер шрифта */
-  color: #333;       /* Цвет текста */
-  font-weight: bold; /* Жирный текст, если нужно выделить email */
+  margin-right: 14px; /* Margin between email and Logout button */
+  font-size: 14px;    /* Font size */
+  color: white;       /* Text color */
+  font-weight: bold;  /* Bold text to highlight email */
 }
 
 .noteArea1 {
-  padding-top: 32%;
+  margin-top: 250px;
+  margin-bottom: 50px; /* Add bottom margin to make the last elements visible */
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
 }
 
 .noteArea2 {
+  height: calc(100vh - 350px);
+  max-height: 450px; /* Limiting the height of the notes area */
+  width: 100%;
   overflow-y: auto;
   padding-top: 10vh;
+  -ms-overflow-style: none;  /* Hide scrollbar in Internet Explorer and Edge */
+  scrollbar-width: none;
 }
 
-.box{
-  border: 2px solid aqua;
+.box {
   border-radius: 9px;
-  width: 350px;
-  height: 8.5vh;
+  width: 500px;
+  min-height: 100px; /* Minimum height to prevent notes from shrinking */
+  max-height: auto;  /* Maximum height is auto-adjusted based on content */
   display: flex;
   justify-content: space-between;
   margin: 15px 15px;
   cursor: pointer;
   transition: background-color 0.3s, border-color 0.3s;
+  background-color: white;
 }
 
+.box:hover {
+  background-color: aqua;  /* Background color on hover */
+  border-color: blue;      /* Border color on hover */
+}
 
 .note-content {
   margin-left:4vh;
   overflow: hidden;
   align-content: center;
+  width: 40%;
 }
 
 .note-title {
@@ -151,6 +212,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
+  color: #ff4f00;
 }
 
 .note-text {
@@ -158,27 +220,42 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
+
 }
 
-
-.box:hover {
-  background-color:aqua; /* Цвет фона при наведении */
-  border-color: blue; /* Цвет границы при наведении */
+.boxRightSide{
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 8px 10px 8px 15px;
 }
 
+.note-email {
+  font-size: 14px;
+  color: #333;
+  margin-right: 10px;
+}
+
+.boxRightSideIN{
+  width: 75%;
+  height: 30%;
+  display: flex;
+  flex-flow: row wrap;
+}
 
 .xButton {
  height: 25px;
  width: 25px;
- padding: 0px;
  justify-content: center;
  display: flex;
  align-content: center;
  align-items: center;
  border: none;
  background-color: transparent;
- margin-bottom: 50px;
  cursor: pointer;
+}
+
+.checkbox{
+  margin-right: 20px;
 }
 
 .xImage{
@@ -186,10 +263,8 @@
   width: 25px;
 }
 
-.boxRightSide{
-display: flex;
-flex-direction: row-reverse;
-margin: 8px 10px 8px 15px;
+.data {
+  margin-right: 10px;
 }
 
 .Note{
@@ -197,10 +272,6 @@ margin: 8px 10px 8px 15px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.checkbox{
-margin-right: 20px;
 }
 
 
@@ -238,7 +309,9 @@ textarea {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 30%;
+  width:30%;
+  min-width: 300px;
+  max-width: 600px;
 }
 
 .justDoIt {
@@ -248,33 +321,23 @@ textarea {
 .save{
   cursor: pointer;
   transition: background-color 0.3s, border-color 0.3s;
+  color: blue;
 }
 
 .save:hover {
-  background-color:lawngreen; /* Цвет фона при наведении */
+  background-color:lawngreen;
 
 }
 
 .close{
   cursor: pointer;
-  transition: background-color 0.3s; /*border-color 0.3s;*/
+  transition: background-color 0.3s;
+  color: blue;
 }
 
 .close:hover {
-  background-color:red; /* Цвет фона при наведении */
+  background-color:#ff4f00;
 }
-
-
-
-/*
-.pointing-image {
-  position: absolute;
-  right: 20px; !* Adjust as necessary to align the finger with the button *!
-  top: 24%; !* Adjust as necessary to align the finger with the button *!
-  transform: translateY(-50%);
-  width: 600px; !* Adjust size as needed *!
-  pointer-events: none; !* This makes the image not interfere with clicking the button *!
-}*/
 
 
 
@@ -286,10 +349,4 @@ textarea {
 .addNoteButton:hover{
 
   background-color: greenyellow;
-}
-
-.note-email {
-  font-size: 14px;
-  color: #333;
-  margin-right: 10px; /* Отступ справа от email */
 }

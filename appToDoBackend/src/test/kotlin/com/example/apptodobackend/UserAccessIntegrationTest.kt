@@ -22,7 +22,7 @@ class UserAccessIntegrationTest {
     @Test
     @WithMockUser(username = "admin", roles = ["ADMIN"])
     fun `admin should have access to all notes`() {
-        // Создаем пользователя и несколько заметок
+        // Creating users and several notes
         val user1 = User(username = "user1", email = "user1@example.com", password = "password123", role = "USER")
         val user2 = User(username = "user2", email = "user2@example.com", password = "password456", role = "USER")
         userRepository.save(user1)
@@ -33,7 +33,7 @@ class UserAccessIntegrationTest {
         noteRepository.save(note1)
         noteRepository.save(note2)
 
-        // Админ должен иметь доступ ко всем заметкам
+        // Admin should have access to all notes
         val allNotes = noteRepository.findAll()
         assertEquals(2, allNotes.size)
         assertTrue(allNotes.any { it.user == user1 })
@@ -43,7 +43,7 @@ class UserAccessIntegrationTest {
     @Test
     @WithMockUser(username = "user1", roles = ["USER"])
     fun `user should only have access to their own notes`() {
-        // Создаем пользователя и несколько заметок
+        // Creating users and several notes
         val user1 = User(username = "user1", email = "user1@example.com", password = "password123", role = "USER")
         val user2 = User(username = "user2", email = "user2@example.com", password = "password456", role = "USER")
         userRepository.save(user1)
@@ -54,12 +54,12 @@ class UserAccessIntegrationTest {
         noteRepository.save(note1)
         noteRepository.save(note2)
 
-        // Пользователь должен иметь доступ только к своим заметкам
+        // User should only have access to their own notes
         val user1Notes = noteRepository.findByUser(user1)
         assertEquals(1, user1Notes.size)
         assertEquals("User1's Note", user1Notes[0].title)
 
-        // Проверяем, что пользователь не видит заметки другого пользователя
+        // Verifying that the user cannot see notes from another user
         val user2Notes = noteRepository.findByUser(user2)
         assertTrue(user2Notes.none { it.user == user1 })
     }
@@ -67,7 +67,7 @@ class UserAccessIntegrationTest {
     @Test
     @WithMockUser(username = "admin", roles = ["ADMIN"])
     fun `admin can delete and modify notes of other users`() {
-        // Создаем пользователей и заметки
+        // Creating users and notes
         val user1 = User(username = "user1@example.com", email = "user1@example.com", password = "password123", role = "USER")
         val user2 = User(username = "user2@example.com", email = "user2@example.com", password = "password456", role = "USER")
         userRepository.save(user1)
@@ -78,24 +78,25 @@ class UserAccessIntegrationTest {
         noteRepository.save(note1)
         noteRepository.save(note2)
 
-        // Проверяем, что заметки были созданы
+        // Verifying that the notes were created
         assertEquals(2, noteRepository.count())
 
-        // Админ редактирует заметку пользователя 1
+        // Admin edits the note of user 1
         note1.title = "Updated User1's Note"
         noteRepository.save(note1)
 
-        // Проверяем, что заметка была обновлена
+        // Verifying that the note was updated
         val updatedNote = noteRepository.findById(note1.id)
         assertTrue(updatedNote.isPresent)
         assertEquals("Updated User1's Note", updatedNote.get().title)
 
-        // Админ удаляет заметку пользователя 2
+        // Admin deletes the note of user 2
         noteRepository.delete(note2)
 
-        // Проверяем, что заметка пользователя 2 была удалена
+        // Verifying that the note of user 2 was deleted
         assertEquals(1, noteRepository.count())
     }
+
 
 
 }

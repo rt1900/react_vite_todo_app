@@ -34,7 +34,7 @@ class CustomAuthenticationFilter(
         SecurityContextHolder.getContext().authentication = authResult
         println("User ${authResult.name} successfully authenticated with authorities: ${authResult.authorities}")
 
-        // Генерация JWT токена
+        // JWT token generation
         logger.info("User ${authResult.name} successfully authenticated")
         val token = jwtTokenProvider.generateToken(authResult)
         logger.info("JWT token generated: $token")

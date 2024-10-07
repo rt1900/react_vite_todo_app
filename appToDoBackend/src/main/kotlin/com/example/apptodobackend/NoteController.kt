@@ -26,10 +26,10 @@ class NoteController {
         val currentUser = authentication.principal as UserDetails
 
         return if (currentUser.authorities.contains(SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            // Если это админ, возвращаем все заметки
-            ResponseEntity.ok(noteService.getAllNotes())  // Этот метод должен возвращать все заметки
+            // If this is an admin, return all notes
+            ResponseEntity.ok(noteService.getAllNotes())  // This method should return all notes
         } else {
-            // Если это обычный пользователь, возвращаем только его заметки
+            // If this is a regular user, return only their notes
             ResponseEntity.ok(noteService.getAllNotesForCurrentUser(currentUser.username))
         }
     }
@@ -64,9 +64,9 @@ class NoteController {
         println("Received request to create note from user: ${authentication.principal}")
 
         logger.info("Received a request to create a note from the user: ${authentication.name}")
-        val currentUser = authentication.principal as UserDetails // Получаю данные о текущем пользователе
+        val currentUser = authentication.principal as UserDetails // Getting the current user data
         println("User authenticated: ${currentUser.username}, Authorities: ${currentUser.authorities}")
-        val appUser = noteService.findUserByEmail(currentUser.username) // Используем email для поиска пользователя
+        val appUser = noteService.findUserByEmail(currentUser.username) // Using email to search for the user
         if (appUser != null) {
             logger.info("User found in the database ${appUser.email}")
             note.user = appUser

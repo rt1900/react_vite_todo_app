@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import './index.css';
 import Header from './components/Header';
 import AddNoteComponent from './components/AddNoteComponent';
 import NoteModal from './components/NoteModal';
 
-// Здесь определяем функцию parseJwt
+// Define the parseJwt function here
 const parseJwt = (token) => {
     try {
         const base64Url = token.split('.')[1];
@@ -32,17 +33,17 @@ function App() {
 
         useEffect(() => {
             const token = localStorage.getItem('token');
-            const storedEmail = localStorage.getItem('userEmail'); // Загружаем email из localStorage
+            const storedEmail = localStorage.getItem('userEmail'); // Load email from localStorage
 
             if (storedEmail) {
-                setUserEmail(storedEmail); // Восстанавливаем email
+                setUserEmail(storedEmail); // Restore email
             }
 
             setLoading(true);
             if (token) {
                 const decodedToken = parseJwt(token);
                 if (decodedToken && decodedToken.roles && decodedToken.roles.includes('ROLE_ADMIN')) {
-                    setIsAdmin(true); // Устанавливаем isAdmin в зависимости от токена
+                    setIsAdmin(true); // Set isAdmin based on the token
                 }
 
                 setIsAuthenticated(true);
@@ -59,7 +60,7 @@ function App() {
                         setIsAuthenticated(false);
                     })
             .finally(() => {
-                    setLoading(false); // Завершаем загрузку
+                    setLoading(false); // Finish loading
                 });
             } else {
                 setIsAuthenticated(false);
@@ -67,16 +68,6 @@ function App() {
                 console.error('No token found, unable to fetch notes.');
             }
         }, []);
-
-    /*useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setIsAuthenticated(true); // Устанавливаем аутентификацию
-            loadNotes(); // Загружаем заметки, если есть токен
-        } else {
-            setIsAuthenticated(false); // Сбрасываем аутентификацию, если токена нет
-        }
-    }, []); */
 
 
     const loadNotes = () => {
@@ -98,7 +89,7 @@ function App() {
                     setIsAuthenticated(false);
                 })
                 .finally(() => {
-                    setLoading(false); // Завершаем загрузку
+                    setLoading(false); // Finish loading
                 });
         } else {
             setIsAuthenticated(false);
@@ -107,17 +98,17 @@ function App() {
         }
     };
 
-  // Изменен handleAddNote для отправки запроса на сервер
+  // Modified handleAddNote to send a request to the server
   const handleAddNote = () => {
       const token = localStorage.getItem('token');
-    const newNote = { title: '', text: '', isCompleted: false };    // Убираем создание ID на фронтенде
+    const newNote = { title: '', text: '', isCompleted: false };    // Removed ID creation on the frontend
     axios.post('http://localhost:8080/api/notes', newNote , {
         headers: {
             Authorization: `Bearer ${token}`
         }
-    })    // Отправляем новую заметку на сервер
+    })    // Sending the new note to the server
       .then(response => {
-        setNotes([...notes, response.data]);     // Сервер возвращает заметку с сгенерированным ID
+        setNotes([...notes, response.data]);     // Server returns the note with a generated ID
       })
       .catch(error => {
         console.error('Error creating note:', error);
@@ -131,30 +122,30 @@ function App() {
 
 
 
-  // Изменен handleDeleteNote для отправки запроса на сервер
+  // Modified handleDeleteNote to send a request to the server
   const handleDeleteNote = (id) => {
       const token = localStorage.getItem('token');
     axios.delete(`http://localhost:8080/api/notes/${id}`, {
         headers: {
-            Authorization: `Bearer ${token}`, // Добавляем токен в заголовок Authorization
-            'Content-Type': 'application/json' // Указываем тип содержимого
+            Authorization: `Bearer ${token}`, // Adding token to the Authorization header
+            'Content-Type': 'application/json' // Specifying content type
         }
     })
       .then(() => {
-        setNotes(notes.filter(note => note.id !== id));
+          setNotes(prevNotes => prevNotes.filter(note => note.id !== id));
       })
       .catch(error => {
         console.error('Error deleting note:', error);
       });
   };
 
-    // Изменен handleSaveNote для отправки запроса на сервер
+    //  Modified handleSaveNote to send a request to the server
     const handleSaveNote = (updatedNote) => {
         const token = localStorage.getItem('token');
       axios.put(`http://localhost:8080/api/notes/${updatedNote.id}`, updatedNote, {
           headers: {
-              Authorization: `Bearer ${token}`, // Добавляем токен в заголовок Authorization
-              'Content-Type': 'application/json' // Указываем тип содержимого
+              Authorization: `Bearer ${token}`, // Adding token to the Authorization header
+              'Content-Type': 'application/json' // Specifying content type
           }
       })
         .then(response => {
@@ -174,8 +165,8 @@ function App() {
 
       axios.put(`http://localhost:8080/api/notes/${id}`, updatedNote, {
           headers: {
-              Authorization: `Bearer ${token}`, // Добавляем токен в заголовок Authorization
-              'Content-Type': 'application/json' // Указываем тип содержимого
+              Authorization: `Bearer ${token}`, // Adding token to the Authorization header
+              'Content-Type': 'application/json' // Specifying content type
           }
       })
         .then(response => {
@@ -196,10 +187,23 @@ function App() {
             .then(response => {
                 console.log('Registration successful:', response.data);
                 alert('Registration successful! Please log in to continue.');
-                onClose();
+                //onClose();
             })
             .catch(error => {
                 console.error('Error registering:', error);
+
+                // Creating a new Audio object
+                const audio = new Audio('./videoplayback (mp3cut.net).m4a');
+                audio.play();  // Воспроизводим аудио
+
+                // Extract the error message and display it in an alert
+                setTimeout(() => {
+                    if (error.response && error.response.data) {
+                        alert(error.response.data);  // Displaying an error message
+                    } else {
+                        alert('An error occurred during registration.');
+                    }
+                }, 100);
             });
     };
 
@@ -215,74 +219,87 @@ function App() {
                     localStorage.setItem('token', response.data.token);
                     const decodedToken = parseJwt(response.data.token);
                     if (decodedToken && decodedToken.sub) {
-
-                        setUserEmail(decodedToken.sub); // Обновляем состояние userEmail
-                        localStorage.setItem('userEmail', decodedToken.sub); // Сохраняем email в localStorage
+                        setUserEmail(decodedToken.sub); // Updating the userEmail state
+                        localStorage.setItem('userEmail', decodedToken.sub); // Saving email to localStorage
                     }
                     if (decodedToken && decodedToken.roles && decodedToken.roles.includes('ROLE_ADMIN')) {
-                        // Если это админ, можно сохранить информацию о роли
-                        setIsAdmin(true); // Устанавливаем состояние isAdmin
+                        //  If it's an admin, store role information
+                        setIsAdmin(true); // Setting the isAdmin state
                     } else {
-                        setIsAdmin(false); // Если не админ, сбрасываем состояние isAdmin
+                        setIsAdmin(false); // If not an admin, reset the isAdmin state
                         console.log('Admin logged in');
                     }
-                    loadNotes(); // Загрузка заметок сразу после входа в систему
+                    loadNotes(); // Loading notes immediately after logging in
                 } else {
                     console.error('Token not found in response');
+                    alert('An error occurred during login. Please try again.');
                 }
             })
             .catch(error => {
                 console.error('Error logging in:', error);
+                if (error.response && error.response.status === 401) {
+                    // If the server returned a 401 Unauthorized status
+                    alert('Invalid email or password');
+                } else {
+                    // Any other errorAny other error
+                    alert('An error occurred during login. Please try again.');
+                }
             });
     };
 
+
     const handleSignin = () => {
-        // Логика для обработки регистрации
+        // Logic for handling registration
     };
 
     const handleLogout = () => {
         setIsAuthenticated(false);
-        setNotes([]); // Очищаем заметки
-        setUserEmail(''); // Очищаем email из состояния
-        setIsAdmin(false); // Сбрасываем состояние isAdmin
-        localStorage.removeItem('token'); // Удаляем токен из локального хранилища
-        localStorage.removeItem('userEmail'); // Удаляем email из локального хранилища
+        setNotes([]); // Clearing notes
+        setUserEmail(''); // Clearing email from state
+        setIsAdmin(false); // Resetting isAdmin state
+        localStorage.removeItem('token'); // Removing token from local storage
+        localStorage.removeItem('userEmail'); // Removing email from local storage
     };
 
     if (loading) {
-        return <div>Loading...</div>; // Показать индикатор загрузки
+        return <div>Loading...</div>; // Show loading indicator
     }
 
 
   return (
       <div>
-        <Header
-            handleAddNote={handleAddNote}
-            onSignin={handleSignin}
-            onLogin={handleLogin}
-            onLogout={handleLogout}
-            isAuthenticated={isAuthenticated}
-            handleRegister={handleRegister}
-            userEmail={userEmail} // Передаем email в Header
+          {/* Adding background blur */}
+          <div className="background-blur"></div>
 
-        />
+          {/* Основной контент */}
+          <div className="content">
+            <Header
+                handleAddNote={handleAddNote}
+                onSignin={handleSignin}
+                onLogin={handleLogin}
+                onLogout={handleLogout}
+                isAuthenticated={isAuthenticated}
+                handleRegister={handleRegister}
+                userEmail={userEmail} // Passing email to Header
 
-        <AddNoteComponent
-            notes={notes} //+
-            handleDeleteNote={handleDeleteNote}//+
-            handleNoteClick={handleNoteClick} //+
-            handleToggleComplete={handleToggleComplete}
-            isAdmin={isAdmin} // Передаем isAdmin
-        />
-
-        {selectedNote && (
-            <NoteModal
-                note={selectedNote}
-                onSave={handleSaveNote}
-                onClose={() => setSelectedNote(null)}
             />
-        )}
-        {/*<img src="/finger.png" alt="Pointing Finger" className="pointing-image"/>*/}
+
+            <AddNoteComponent
+                notes={notes} //+
+                handleDeleteNote={handleDeleteNote}//+
+                handleNoteClick={handleNoteClick} //+
+                handleToggleComplete={handleToggleComplete}
+                isAdmin={isAdmin} // Передаем isAdmin
+            />
+
+            {selectedNote && (
+                <NoteModal
+                    note={selectedNote}
+                    onSave={handleSaveNote}
+                    onClose={() => setSelectedNote(null)}
+                />
+            )}
+          </div>
       </div>
   );
 }

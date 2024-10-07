@@ -18,15 +18,8 @@ class JwtTokenProvider {
 
     private val logger: Logger = LoggerFactory.getLogger(JwtTokenProvider::class.java)
 
-//    @Value("\${jwt.secret}")
-//    private lateinit var jwtSecret: String
-
     private val jwtSecretKey: SecretKey = Keys.hmacShaKeyFor("SuperSecretKeyThatIsNotVeryLongAndNotVerySecureAndMaybeMeetsThe512BitRequirementMercedesIsBetterThanBMW".toByteArray())
     private val jwtExpirationInMs = 3600000
-
-//    private fun getSigningKey(): SecretKey {
-//        return Keys.hmacShaKeyFor(jwtSecret.toByteArray(StandardCharsets.UTF_8))
-//    }
 
     fun generateToken(authentication: Authentication): String {
         val userPrincipal = authentication.principal as UserDetails
@@ -39,10 +32,10 @@ class JwtTokenProvider {
 
         return Jwts.builder()
             .setClaims(claims)
-            .setIssuer("IssuerName") // Задайте ваше значение Issuer
+            .setIssuer("IssuerName") // Set the Issuer value
             .setIssuedAt(now)
             .setExpiration(expiryDate)
-            .signWith(jwtSecretKey, SignatureAlgorithm.HS512)  // Используем HS256 вместо HS512
+            .signWith(jwtSecretKey, SignatureAlgorithm.HS512)  // Using HS256 instead of HS512
             .compact()
     }
 

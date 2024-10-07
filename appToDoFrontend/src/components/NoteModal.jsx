@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 export default function NoteModal({ note, onSave, onClose }) {
@@ -30,3 +31,13 @@ export default function NoteModal({ note, onSave, onClose }) {
     </div>
   );
 }
+
+// Defining PropTypes for validation
+NoteModal.propTypes = {
+  note: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired
+  }).isRequired,
+  onSave: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
+};

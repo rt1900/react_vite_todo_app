@@ -48,7 +48,7 @@ class SecurityConfig(val customUserDetailsService: CustomUserDetailsService) {
 //                    .requestMatchers("/api/logout").authenticated()
             }
             .addFilterBefore(JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter::class.java)
-            //.addFilterBefore(CustomAuthenticationFilter(authenticationManager(http), jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java)   // do I need this?
+
 
             .logout { logout ->
                 logout

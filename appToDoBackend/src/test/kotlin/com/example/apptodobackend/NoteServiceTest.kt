@@ -10,27 +10,27 @@ class NoteServiceTest {
 
     @Test
     fun `test saveNote should save note successfully`() {
-        // Мокаем зависимости
+        // Mocking dependencies
         val noteRepository = mock(NoteRepository::class.java)
         val userRepository = mock(UserRepository::class.java)
 
-        // Создаем объект NoteService с мокнутыми зависимостями
+        // Creating a NoteService object with mocked dependencies
         val noteService = NoteService(noteRepository, userRepository)
 
-        // Создаем тестовую заметку
+        // Creating a test note
         val note = Note(title = "Test Note", text = "This is a test note")
 
-        // Задаем поведение мокнутого noteRepository
+        // Defining the behavior of the mocked noteRepository
         `when`(noteRepository.save(note)).thenReturn(note)
 
-        // Вызываем тестируемый метод
+        // Calling the method under test
         val savedNote = noteService.saveNote(note)
 
-        // Проверяем результат
+        // Verifying the result
         assertEquals("Test Note", savedNote.title)
         assertEquals("This is a test note", savedNote.text)
 
-        // Проверяем, что метод save был вызван
+        // Verifying that the save method was called
         verify(noteRepository).save(note)
     }
 
@@ -38,25 +38,25 @@ class NoteServiceTest {
 
     @Test
     fun `test updateNote should update note successfully`() {
-        // Мокаем зависимости
+        // Mocking dependencies
         val noteRepository = mock(NoteRepository::class.java)
         val noteService = NoteService(noteRepository, mock(UserRepository::class.java))
 
-        // Создаем тестовую заметку
+        // Creating a test note
         val existingNote = Note(id = 1L, title = "Old Title", text = "Old Text")
         val updatedNote = Note(id = 1L, title = "New Title", text = "New Text")
 
-        // Мокаем, что заметка существует в репозитории
+        // Mocking that the note exists in the repository
         `when`(noteRepository.existsById(existingNote.id)).thenReturn(true)
         `when`(noteRepository.findById(existingNote.id)).thenReturn(Optional.of(existingNote))
 
-        // Мокаем сохранение обновленной заметки
+        // Mocking the saving of the updated note
         `when`(noteRepository.save(existingNote)).thenReturn(updatedNote)
 
-        // Вызываем метод
+        // Calling the method
         val result = noteService.updateNote(existingNote.id, updatedNote)
 
-        // Проверяем результат
+        // Verifying the result
         assertNotNull(result)
         assertEquals("New Title", result?.title)
         assertEquals("New Text", result?.text)
@@ -67,17 +67,17 @@ class NoteServiceTest {
 
     @Test
     fun `test deleteNoteById should delete note successfully`() {
-        // Мокаем зависимости
+        // Mocking dependencies
         val noteRepository = mock(NoteRepository::class.java)
         val noteService = NoteService(noteRepository, mock(UserRepository::class.java))
 
-        // Мокаем, что заметка существует
+        // Mocking that the note exists
         `when`(noteRepository.existsById(1L)).thenReturn(true)
 
-        // Вызываем метод
+        // Calling the method
         val isDeleted = noteService.deleteNoteById(1L)
 
-        // Проверяем результат
+        // Verifying the result
         assertTrue(isDeleted)
         verify(noteRepository).deleteById(1L)
     }
@@ -85,27 +85,27 @@ class NoteServiceTest {
 
     @Test
     fun `test toggleNoteCompletion should toggle completion status`() {
-        // Мокаем зависимости
+        // Mocking dependencies
         val noteRepository = mock(NoteRepository::class.java)
         val noteService = NoteService(noteRepository, mock(UserRepository::class.java))
 
-        // Создаем тестовую заметку с isCompleted = false
+        // Creating a test note with isCompleted = false
         val note = Note(id = 1L, title = "Test Note", text = "Test text", isCompleted = false)
 
-        // Мокаем, что заметка существует в репозитории
+        // Mocking that the note exists in the repository
         `when`(noteRepository.findById(1L)).thenReturn(Optional.of(note))
 
-        // Мокаем сохранение обновлённой заметки
+        // Mocking the saving of the updated note
         `when`(noteRepository.save(note)).thenReturn(note.copy(isCompleted = true))
 
-        // Вызываем метод
+        // Calling the method
         val updatedNote = noteService.toggleNoteCompletion(1L)
 
-        // Проверяем, что состояние изменилось
-        assertNotNull(updatedNote) // проверяем, что updatedNote не null
-        assertTrue(updatedNote?.isCompleted == true) // проверяем, что isCompleted стал true
+        // Verifying that the status has changed
+        assertNotNull(updatedNote) // verifying that updatedNote is not null
+        assertTrue(updatedNote?.isCompleted == true) // verifying that isCompleted is now true
 
-        // Проверяем, что метод save был вызван
+        // Verifying that the save method was called
         verify(noteRepository).save(note)
     }
 
@@ -113,39 +113,40 @@ class NoteServiceTest {
 
     @Test
     fun `test getNoteById should return note if exists`() {
-        // Мокаем зависимости
+        // Mocking dependencies
         val noteRepository = mock(NoteRepository::class.java)
         val noteService = NoteService(noteRepository, mock(UserRepository::class.java))
 
-        // Создаем тестовую заметку
+        // Creating a test note
         val note = Note(id = 1L, title = "Test Note", text = "Test text")
 
-        // Мокаем, что заметка существует в репозитории
+        // Mocking that the note exists in the repository
         `when`(noteRepository.findById(1L)).thenReturn(Optional.of(note))
 
-        // Вызываем метод
+        // Calling the method
         val result = noteService.getNoteById(1L)
 
-        // Проверяем результат
+        // Verifying the result
         assertNotNull(result)
         assertEquals("Test Note", result?.title)
         assertEquals("Test text", result?.text)
     }
 
-
-    // Создаём mock для noteRepository и noteService
+    // Creating mock for noteRepository and noteService
     private val noteRepository = mock(NoteRepository::class.java)
     private val noteService = NoteService(noteRepository, mock(UserRepository::class.java))
+
     @Test
     fun `getNoteById should throw exception if note does not exist`() {
-        // Мокаем репозиторий, чтобы возвращать пустой результат (заметка не найдена)
+        // Mocking the repository to return an empty result (note not found)
         `when`(noteRepository.findById(1L)).thenReturn(Optional.empty())
 
-        // Проверяем, что метод выбрасывает исключение NoteNotFoundException, если заметка не найдена
+        // Verifying that the method throws NoteNotFoundException if the note is not found
         assertThrows(NoteNotFoundException::class.java) {
             noteService.getNoteById(1L)
         }
     }
+
 
 
 

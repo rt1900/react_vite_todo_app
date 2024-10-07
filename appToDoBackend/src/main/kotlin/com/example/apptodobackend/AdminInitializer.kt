@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
-@Profile("!test")  // Этот компонент будет отключен в тестовом профиле
+@Profile("!test")  // This component will be disabled in the test profile
 class AdminInitializer(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
@@ -18,18 +18,18 @@ class AdminInitializer(
 
         if (dataSourceUrl.contains("h2")) {
             println("H2 database detected, skipping admin creation.")
-            return  // Если используется H2, выходим из метода и не создаем администратора
+            return  // If H2 is used, exit the method and do not create an administrator
         }
         val adminEmail = "adminmetro@gmail.com"
         val adminPassword = "Metro123"
 
-        // Проверяем, существует ли администратор в базе данных
+        // Checking for the existence of an administrator in the database
         if (userRepository.findByEmail(adminEmail) == null) {
-            // Если администратора нет, создаём его
+            //If the administrator is not present, create one
             val adminUser = User(
                 email = adminEmail,
                 username = adminEmail,
-                password = passwordEncoder.encode(adminPassword), // Захешированный пароль
+                password = passwordEncoder.encode(adminPassword), // Hashed password
                 role = "ROLE_ADMIN"
             )
             userRepository.save(adminUser)

@@ -24,7 +24,7 @@ data class Note(
     @JoinColumn(name = "user_id")
     var user: User? = null
 ) {
-    // Добавляем геттер для email пользователя
+    // Adding a getter for the user's email
     val userEmail: String?
         get() = user?.email
 }
